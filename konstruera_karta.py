@@ -282,7 +282,7 @@ def main():
     # 3b) Skriv ut platser som finns i Excel men inte i draw.io
     missing = sorted(set(plats_map.keys()) - found_plats)
     if missing:
-        print("\nPlatsnummer som finns i Excel men inte i kartan:")
+        print("Platsnummer som finns i Excel men inte i kartan:")
         for p in missing:
             names = " | ".join(
                 f"{e['båtnamn']} ({e['Förnamn']} {e['Efternamn']})"
@@ -290,7 +290,7 @@ def main():
             )
             print(f"  Plats {p}: {names}")
     else:
-        print("\nAlla platser i Excel matchade boxar i kartan.")
+        print("Alla platser i Excel matchade boxar i kartan.")
 
     # 4) Spara tillbaka
     save_drawio(outer, diagram, mode, work_root, args.drawio_out)
