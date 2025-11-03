@@ -5,7 +5,7 @@ import zlib
 import html
 from pathlib import Path
 from typing import Optional, Tuple, Dict, List
-
+import argparse
 import pandas as pd
 from lxml import etree
 
@@ -188,7 +188,7 @@ def build_plats_map_from_excel(
             hits = re.findall(pat, s)
             if hits:
                 # Om flera 'Varvsområde ... plats: NNN' i samma cell: ta sista (ofta mest relevant)
-                return hits[-1].strip()
+                return hits[-1].strip().lower()
 
         return None
 
@@ -235,11 +235,7 @@ def set_cell_value(cell: etree._Element, new_value_text: str):
     cell.set("value", html.escape(new_value_text, quote=True))
 
 
-# ---------- Huvudlogik ----------
-
-
 def main():
-    import argparse
 
     p = argparse.ArgumentParser(
         description="Uppdatera draw.io med namn från Excel baserat på platsnummer."
@@ -260,7 +256,7 @@ def main():
     outer, diagram, mode, inner_bytes = load_drawio(args.drawio_in)
     work_root = parse_inner_root_for_mode(outer, mode, inner_bytes)
 
-    # 3) Gå igenom alla boxar (mxCell vertex="1") och ersätt value om texten är enbart en siffra som finns i Excel
+    # 3) Gå igenom alla boxar (mxCell vertex="1") och ersätt value om texten finns i Excel
     changed = 0
     found_plats = set()
 
@@ -270,7 +266,6 @@ def main():
         raw_value = cell.get("value") or ""
         plain = html_to_plain_text(raw_value).strip()
 
-        # Enbart siffra?
         if re.fullmatch(r"[0-9]+[\s\-]?[A-Za-z]?", plain):
             plats = plain.replace(" ", "").replace("-", "").lower()
             if plats in plats_map:
