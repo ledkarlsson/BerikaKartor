@@ -162,7 +162,7 @@ def build_plats_map_from_excel(
     for col in need.values():
         df[col] = df[col].astype(str).str.strip()
 
-    def extract_platsnum_varvsomrade(text: str) -> str:
+    def extract_platsnum_varvsomrade(text: str) -> str | None:
         """
         Returnera platsnumret ENDAST om cellen innehåller 'Varvsområde ... plats: <siffra>'.
         Ignorerar andra 'plats:'-träffar.
